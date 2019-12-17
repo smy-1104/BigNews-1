@@ -38,6 +38,25 @@
     </div>
   </div>
 
+  <!-- 模态框 -->
+  <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">友情提示</h4>
+        </div>
+        <div class="modal-body">
+          <p>One fine body&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
   <script>
     //入口函数
     $(function () {
@@ -56,28 +75,51 @@
         var username = $('.input_txt').val().trim();
         var password = $('.input_pass').val().trim();
         //2.非空判断
-        if(username.length == 0 || password.length == 0){
-          alert('用户名和密码不能为空');
+        if (username.length == 0 || password.length == 0) {
+          //alert('用户名和密码不能为空');
+          //（1）设置模态框提示信息
+          $('.modal-body>p').text('用户名和密码不能为空');
+          //(2)弹出模态框
+          $('#myModal').modal();
           return;
         };
         //3.ajax请求
         $.ajax({
-          url:'http://localhost:8080/api/v1/admin/user/login',
-          type:'post',
-          dataType:'json',
-          data:{
-            username:username,
-            password:password
+          url: 'http://localhost:8080/api/v1/admin/user/login',
+          type: 'post',
+          dataType: 'json',
+          data: {
+            username: username,
+            password: password
           },
-          success: function(backData){
+          success: function (backData) {
             //4.跳转首页
             console.log(backData);
-            if(backData.code == 200){
-              alert('登录成功');
-              //跳转首页
-              window.location.href = './index.html';
-            }else{
-              alert(backData.msg);
+            if (backData.code == 200) {
+              //alert('登录成功');
+              //（1）设置模态框提示信息
+              $('.modal-body>p').text('登录成功');
+              //(2)弹出模态框
+              $('#myModal').modal();
+              //（3）给模态框注册消失事件
+              $('#myModal').on('hidden.bs.modal', function (e) {
+                // do something...
+                /* 
+                1.发现问题 ： 模态框无法显示
+                2.分析问题 ： 模态框显示的一瞬间，页面就跳转了
+                3.解决问题 ： 点击模态框的确认按钮，页面才跳转
+                */
+                //跳转首页
+                window.location.href = './index.html';
+              });
+
+            } else {
+              //alert(backData.msg);
+
+              //（1）设置模态框提示信息
+              $('.modal-body>p').text(backData.msg);
+              //(2)弹出模态框
+              $('#myModal').modal();
             }
           }
         });
