@@ -103,6 +103,10 @@
               $('#myModal').modal();
               //（3）给模态框注册消失事件
               $('#myModal').on('hidden.bs.modal', function (e) {
+
+                //第一步：将token存入本地（localStorage永久存储）
+                localStorage.setItem('token',backData.token);
+                
                 // do something...
                 /* 
                 1.发现问题 ： 模态框无法显示
